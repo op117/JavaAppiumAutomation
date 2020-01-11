@@ -1,6 +1,7 @@
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -10,6 +11,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchTextTests {
 
@@ -90,6 +93,39 @@ public class SearchTextTests {
         waitForElementNotPresent(By.xpath("//*[@resource-id = 'org.wikipedia:id/page_list_item_title']"),
                 "Titles are still shown",
                 15);
+    }
+
+
+    @Test
+    public void checkAllTitlesOnTheFirstResultsScreen() {
+
+        waitForElementAndClick(By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input ",
+                15);
+
+        waitForElementPresent(By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "'Search Wikipedia' is not shown",
+                15);
+
+        waitForElementAndSendKeys(By.id("org.wikipedia:id/search_src_text"),
+                "Python",
+                "Text cannot be send",
+                6);
+
+
+        List<WebElement> list = new ArrayList<>();
+
+        for(int i = 1; i < 12; i+=2){
+            list.add(waitForElementPresent(By.xpath("//@instance=" + i),
+                    "Element cannot be added",
+                    10));
+        }
+
+        for(WebElement element : list){
+            String text = element.getAttribute("//@text");
+            Assert.assertTrue(text.contains("Python"));
+        }
+
     }
 
 
