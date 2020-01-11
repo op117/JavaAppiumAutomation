@@ -55,8 +55,41 @@ public class SearchTextTests {
                 "'Search Wikipedia' is not shown",
                 15);
 
+    }
 
 
+    @Test
+    public void searchTextAndCancelSearch() {
+
+        waitForElementAndClick(By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input ",
+                15);
+
+        waitForElementPresent(By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "'Search Wikipedia' is not shown",
+                15);
+
+        waitForElementAndSendKeys(By.id("org.wikipedia:id/search_src_text"),
+                "Python",
+                "Text cannot be send",
+                6);
+
+        waitForElementPresent(
+                By.xpath("//*[@text='Python syntax and semantics']"),
+                "Text is not found on the title",
+                15);
+
+        waitForElementPresent(
+                By.xpath("//*[@text='Python (programming language)']"),
+                "Text is not found on the title",
+                15);
+
+        waitForElementAndClick(By.id("org.wikipedia:id/search_close_btn"),
+                "'X' button cannot be clicked",7);
+
+        waitForElementNotPresent(By.xpath("//*[@resource-id = 'org.wikipedia:id/page_list_item_title']"),
+                "Titles are still shown",
+                15);
     }
 
 
@@ -94,6 +127,14 @@ public class SearchTextTests {
         return element;
 
     }
+
+
+    private WebElement waitForElementAndClear(By by, String error_message, int timeoutInSeconds) {
+        WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
+        element.clear();
+        return element;
+    }
+
 
 
     private void skipOnboarding(){
